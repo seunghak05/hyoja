@@ -391,11 +391,18 @@
                         </div>
                     </div>
                     <div class="bg-white rounded-2xl p-8 shadow-sm floating-card">
-                        <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">찾아오시는 길</h3>
-                        <div class="h-80 bg-gray-200 rounded-xl overflow-hidden">
-                            <div id="map" class="w-full h-full"></div>
+                        <div class="bg-white rounded-2xl p-8 shadow-sm floating-card">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">찾아오시는 길</h3>
+                            
+                            <div class="h-96 bg-gray-200 rounded-xl overflow-hidden mb-4">
+                                <div id="map" class="w-full h-full"></div>
+                            </div>
+                            
+                            <a href="https://naver.me/G1wTuxDK" target="_blank" rel="noopener noreferrer" 
+                            class="block w-full bg-green-500 text-white text-center font-bold py-3 rounded-lg hover:bg-green-600 transition-colors">
+                                네이버 지도로 길찾기
+                            </a>
                         </div>
-                        
                     </div>
                 </div>
             </div>
@@ -567,21 +574,24 @@
 
 
             // --- 네이버 지도 API 실행 ---
+            // --- 네이버 지도 API 실행 ---
             if (window.naver && window.naver.maps) {
-                // 지도의 중심 좌표와 확대 레벨을 설정합니다.
+                // 링크로 보내주신 '효자태권도장'의 정확한 좌표입니다.
+                var exactPosition = new naver.maps.LatLng(35.79248, 127.12344);
+
                 var mapOptions = {
-                    center: new naver.maps.LatLng(35.7925, 127.1235), // 효자태권도 위치 좌표
-                    zoom: 17,
-                    scrollWheel: false, // 스크롤로 확대/축소 비활성화
-                    draggable: true,    // 마우스로 지도 이동 활성화
+                    center: exactPosition, // 지도의 중심을 새 좌표로 설정
+                    zoom: 18, // 지도를 조금 더 확대해서 잘 보이게 합니다.
+                    scrollWheel: false,
+                    draggable: true,
                 };
 
                 // 'map' ID를 가진 div에 지도를 생성합니다.
                 var map = new naver.maps.Map('map', mapOptions);
 
-                // 해당 위치에 마커(위치 표시)를 생성합니다.
+                // 마커(위치 표시)도 새 좌표에 생성합니다.
                 var marker = new naver.maps.Marker({
-                    position: new naver.maps.LatLng(35.7925, 127.1235),
+                    position: exactPosition,
                     map: map
                 });
             } else {

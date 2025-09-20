@@ -567,20 +567,26 @@
 
 
             // --- 네이버 지도 API 실행 ---
-            if (window.naver && window.naver.maps && 'YOUR_CLIENT_ID_HERE' !== 'YOUR_CLIENT_ID_HERE') {
+            if (window.naver && window.naver.maps) {
+                // 지도의 중심 좌표와 확대 레벨을 설정합니다.
                 var mapOptions = {
-                    center: new naver.maps.LatLng(35.7925, 127.1235),
+                    center: new naver.maps.LatLng(35.7925, 127.1235), // 효자태권도 위치 좌표
                     zoom: 17,
-                    scrollWheel: false,
-                    draggable: true,
+                    scrollWheel: false, // 스크롤로 확대/축소 비활성화
+                    draggable: true,    // 마우스로 지도 이동 활성화
                 };
+
+                // 'map' ID를 가진 div에 지도를 생성합니다.
                 var map = new naver.maps.Map('map', mapOptions);
+
+                // 해당 위치에 마커(위치 표시)를 생성합니다.
                 var marker = new naver.maps.Marker({
                     position: new naver.maps.LatLng(35.7925, 127.1235),
                     map: map
                 });
             } else {
-                document.getElementById('map').innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100 text-gray-500 p-4 text-center rounded-xl"><div><svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><p>지도를 불러오지 못했습니다.<br>Naver Maps API 클라이언트 ID를 확인해주세요.</p></div></div>';
+                // 지도를 불러오지 못했을 때의 대체 메시지
+                document.getElementById('map').innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100 text-gray-500 p-4 text-center rounded-xl"><div><svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><p>지도를 불러오는 중입니다...</p></div></div>';
             }
             
             // --- 스크롤 애니메이션 효과 (Intersection Observer 활용) ---

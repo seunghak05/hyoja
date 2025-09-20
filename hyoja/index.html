@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>평화효자태권도</title>
+    <meta name="description" content="전주 평화동 남중학교 앞에 위치한 효자태권도입니다. 유아, 초등학생부터 성인까지. 품새, 호신술, 학교체육 등 최고보다 최선을 다해 지도합니다.">
+    <meta name="keywords" content="전주태권도, 전주평화동태권도, 효자태권도, 남중학교태권도, 전주어린이태권도, 전주유아체육, 전주성인태권도, 평화동태권도">
+    
+    <link rel="icon" type="image/png" href="img/favicon.ico/apple-icon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID_HERE"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Black+Han+Sans&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .font-slogan {
+            font-family: 'Black Han Sans', sans-serif;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        #home { 
+            position: relative; 
+            overflow: hidden;
+            min-height: 500px;
+        }
+        .hero-slide {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-size: cover; 
+            background-position: center;
+            opacity: 0; 
+            transition: opacity 2s ease-in-out; 
+            z-index: 1;
+            will-change: opacity;
+        }
+        .hero-slide.active { opacity: 1; }
+        .hero-content { position: relative; z-index: 2; }
+        .hero-overlay {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.45); 
+            z-index: 1;
+        }
+        .section-title { 
+            @apply text-3xl md:text-4xl font-bold text-gray-900 tracking-tight; 
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .floating-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        .floating-card.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        /* --- 썸네일 갤러리 스타일 --- */
+        #thumbnail-bar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        #thumbnail-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .main-gallery-image {
+            transition: opacity 0.5s ease-in-out;
+            will-change: opacity;
+        }
+        .thumbnail-image {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 4px solid transparent;
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+        .thumbnail-image:hover {
+            opacity: 1;
+        }
+        .thumbnail-image.is-active {
+            border-color: #2563eb;
+            opacity: 1;
+        }
+        
+        /* --- 반응형 웹 스타일 --- */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 3rem; line-height: 1.2; }
+            .hero-content p { font-size: 1rem; }
+            .section-title { @apply text-2xl; }
+            section { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+            #contact .lg\:grid-cols-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-700">
+    <header class="bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-gray-100">
+        <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+            <a href="#">
+                <img src="logo.png" alt="평화효자태권도 로고" class="h-16 sm:h-20 w-auto">
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#intro" class="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">도장소개</a>
+                <a href="#programs" class="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">교육안내</a>
+                <a href="#gallery" class="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">활동사진</a>
+                <a href="#schedule" class="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">수련시간</a>
+                <a href="#master" class="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">지도자</a>
+                <a href="#contact" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all">문의하기</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-4 sm:px-6 pt-2 pb-6 bg-white border-t border-gray-100">
+            <a href="#intro" class="block py-3 text-gray-600 hover:text-blue-600 font-medium">도장소개</a>
+            <a href="#programs" class="block py-3 text-gray-600 hover:text-blue-600 font-medium">교육안내</a>
+            <a href="#gallery" class="block py-3 text-gray-600 hover:text-blue-600 font-medium">활동사진</a>
+            <a href="#schedule" class="block py-3 text-gray-600 hover:text-blue-600 font-medium">수련시간</a>
+            <a href="#master" class="block py-3 text-gray-600 hover:text-blue-600 font-medium">지도자</a>
+            <a href="#contact" class="block mt-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full text-center hover:shadow-lg transition-all">문의하기</a>
+        </div>
+    </header>
+    <main>
+        <section id="home" class="text-white h-screen flex flex-col justify-center items-center text-center px-4">
+            <div class="hero-overlay"></div>
+            <div class="hero-content flex flex-col items-center max-w-4xl">
+                <h1 class="font-slogan text-5xl sm:text-7xl md:text-8xl tracking-wide" style="text-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    최고보다 <span class="text-yellow-300">최선</span>을<br>가르칩니다
+                </h1>
+                <p class="mt-8 text-base sm:text-lg md:text-xl max-w-2xl text-white/95 leading-relaxed" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+                    효자태권도는 수련생들의 몸과 마음이 함께 성장하는<br>건강하고 따뜻한 공간입니다
+                </p>
+                <a href="#contact" class="mt-10 bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-50 transition-all shadow-xl hover:shadow-2xl">
+                    상담 문의하기
+                </a>
+            </div>
+        </section>
+        <section id="intro" class="py-24 md:py-32 bg-white">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="section-title mb-8">우리가 함께 만드는 특별한 공간</h2>
+                    <p class="text-lg md:text-xl leading-relaxed text-gray-600 mb-12">
+                        전주 평화동의 중심에서, 저희 효자태권도는 단순한 발차기 기술을 넘어<br>
+                        예의와 인내, 그리고 자신감을 가르칩니다
+                    </p>                                        
+                    <div class="grid md:grid-cols-3 gap-12 mt-16">
+                        <div class="text-center floating-card">
+                            <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span class="text-white text-2xl font-bold">禮</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">예의범절</h3>
+                            <p class="text-gray-600">올바른 인성과 예의를 통해<br>사회의 리더로 성장합니다</p>
+                        </div>
+                        <div class="text-center floating-card">
+                            <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span class="text-white text-2xl font-bold">健</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">건강한 체력</h3>
+                            <p class="text-gray-600">체계적인 수련을 통해<br>튼튼한 몸과 마음을 기릅니다</p>
+                        </div>
+                        <div class="text-center floating-card">
+                            <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span class="text-white text-2xl font-bold">志</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">강한 의지</h3>
+                            <p class="text-gray-600">꾸준한 수련을 통해<br>포기하지 않는 정신력을 키웁니다</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="programs" class="py-24 md:py-32 gradient-bg">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="text-center mb-16">
+                    <h2 class="section-title mb-6">효자태권도의 특별한 교육</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        체계적이고 전문적인 프로그램으로 수련생 개개인의 성장을 돕습니다
+                    </p>
+                </div>                                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+                    <div class="floating-card bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 text-center mb-4">기초 체력</h3>
+                        <p class="text-gray-600 text-center leading-relaxed">성장판을 자극하는 체조와 줄넘기로 기초 체력을 탄탄하게 만듭니다</p>
+                    </div>
+                    <div class="floating-card bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 text-center mb-4">호신술</h3>
+                        <p class="text-gray-600 text-center leading-relaxed">실전 호신술로 자신을 보호하는 능력과 자신감을 기릅니다</p>
+                    </div>
+                    <div class="floating-card bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 text-center mb-4">품새</h3>
+                        <p class="text-gray-600 text-center leading-relaxed">집중력과 표현력을 향상시키는 아름다운 품새를 배웁니다</p>
+                    </div>
+                    <div class="floating-card bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 text-center mb-4">인성교육</h3>
+                        <p class="text-gray-600 text-center leading-relaxed">올바른 가치관과 인성을 기르는 전인격적 교육을 합니다</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="gallery" class="py-24 md:py-32 bg-white">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="text-center mb-16">
+                    <h2 class="section-title mb-6">생생한 수련 모습</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        열심히 수련하는 우리 수련생들의 모습을 담았습니다
+                    </p>
+                </div>
+                <div class="max-w-4xl mx-auto">
+                    <div id="main-image-container" class="relative w-full aspect-video bg-gray-100 rounded-xl shadow-lg overflow-hidden mb-4">
+                        </div>
+                    <div id="thumbnail-bar" class="flex overflow-x-auto space-x-3 p-2">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="schedule" class="py-24 md:py-32 gradient-bg">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="text-center mb-16">
+                    <h2 class="section-title mb-6">수련 시간표</h2>
+                    <p class="text-lg text-gray-600">연령별 맞춤 수련 시간으로 체계적인 교육을 진행합니다</p>
+                </div>                                
+                <div class="max-w-2xl mx-auto">
+                    <div class="grid gap-6">
+                        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow floating-card">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <span class="text-white font-bold">1부</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">14:30 - 15:30</h3>
+                                        <p class="text-gray-600">1부</p>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow floating-card">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <span class="text-white font-bold">2부</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">16:00 - 17:00</h3>
+                                        <p class="text-gray-600">2부</p>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow floating-card">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <span class="text-white font-bold">3부</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">17:30 - 18:30</h3>
+                                        <p class="text-gray-600">3부</p>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow floating-card">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <span class="text-white font-bold">4부</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">19:30 - 20:30</h3>
+                                        <p class="text-gray-600">성인 및 중·고등부</p>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>                                        
+                    <div class="text-center mt-12 p-6 bg-blue-50 rounded-2xl floating-card">
+                        <p class="text-blue-700 font-medium">
+                            💡 각 수련 사이 30분은 개인 스트레칭 및 자율 수련 시간입니다
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="master" class="py-24 md:py-32 bg-white">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="text-center mb-16">
+                    <h2 class="section-title mb-6">지도자 소개</h2>
+                    <p class="text-lg text-gray-600">최고의 실력과 경험으로 정성껏 지도합니다</p>
+                </div>                                
+                <div class="max-w-4xl mx-auto bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-gray-100 floating-card">
+                    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                        <div class="flex-shrink-0 text-center">
+                            <img src="img/pro.JPG" alt="효자태권도 관장님" class="w-48 h-48 rounded-full object-cover shadow-lg mx-auto border-4 border-white">
+                            <h3 class="mt-6 text-2xl font-bold text-gray-900">관장 이진규</h3>
+                            <p class="text-blue-600 font-semibold">Hyoja Taekwondo</p>
+                        </div>
+                        <div class="flex-1 text-center md:text-left">
+                            <h4 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+                                항상 최선을 다해 지도합니다
+                            </h4>
+                            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                                겨루기, 품새 선수 생활과 풍부한 지도 경험을 바탕으로 <br>태권도의 참된 가치와 즐거움을 전달하고자 합니다.
+                            </p>                                                                
+                            <ul class="space-y-4 text-gray-700">
+                                <li class="flex items-center justify-center md:justify-start">
+                                    <svg class="w-6 h-6 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="font-medium">태권도 공인 <strong>8단</strong></span>
+                                </li>
+                                <li class="flex items-center justify-center md:justify-start">
+                                    <svg class="w-6 h-6 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="font-medium">現 품새 선수 (<strong>전국대회 다수 우승</strong>)</span>
+                                </li>
+                                <li class="flex items-center justify-center md:justify-start">
+                                    <svg class="w-6 h-6 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="font-medium">現 전주시 태권도협회 이사</span>
+                                </li>
+                                <li class="flex items-center justify-center md:justify-start">
+                                    <svg class="w-6 h-6 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="font-medium">품새·격파·겨루기 심판 자격증 보유</span>
+                                </li>
+                                <li class="flex items-center justify-center md:justify-start">
+                                    <svg class="w-6 h-6 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="font-medium">호신술 지도자 자격증 보유</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>                
+        <section id="contact" class="py-24 md:py-32 gradient-bg">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="text-center mb-16">
+                    <h2 class="section-title mb-6">문의 및 오시는 길</h2>
+                    <p class="text-lg text-gray-600">궁금한 점은 언제든지 편하게 문의해주세요</p>
+                </div>                                
+                <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
+                    <div class="space-y-8">
+                        <div class="bg-white rounded-2xl p-8 shadow-sm floating-card">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">전화 상담</h3>
+                                <a href="tel:063-229-9222" class="text-3xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                                    063-229-9222
+                                </a>
+                                <p class="text-gray-600 mt-4">평일 오후 2시 ~ 저녁 9시<br>언제든 편하게 연락주세요</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-8 shadow-sm floating-card">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">도장 위치</h3>
+                                <p class="text-lg text-gray-700 leading-relaxed">
+                                    전북특별자치도 전주시 완산구<br>
+                                    평화동 남중학교 앞<br>
+                                    <span class="text-blue-600 font-semibold">GS25 건물 2층</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 shadow-sm floating-card">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">찾아오시는 길</h3>
+                        <div class="h-80 bg-gray-200 rounded-xl overflow-hidden">
+                            <div id="map" class="w-full h-full"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-gray-900 text-gray-300">
+        <div class="container mx-auto px-4 sm:px-6 py-12">
+            <div class="flex flex-col items-center text-center space-y-6">
+                <h2 class="text-2xl font-bold text-white mb-2">평화 효자태권도</h2>
+                <div class="space-y-1 text-sm">
+                    <p class="text-gray-400">전북특별자치도 전주시 완산구 평화동 남중학교 앞 GS25 2층</p>
+                    <p class="text-gray-400">TEL: 063-229-9222</p>
+                </div>                                
+                <div class="border-t border-gray-700 pt-6 w-full mt-6">
+                    <p class="text-gray-500 text-xs">&copy; 2024 Hyoja Taekwondo. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- 모바일 메뉴 토글 ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => { 
+                mobileMenu.classList.toggle('hidden'); 
+            });
+            
+            // --- 메뉴 링크 클릭 시 부드러운 스크롤 ---
+            const menuLinks = document.querySelectorAll('#mobile-menu a, header nav a[href^="#"]');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        const targetElement = document.querySelector(href);
+                        if(targetElement) {
+                            const headerOffset = document.querySelector('header').offsetHeight;
+                            const elementPosition = targetElement.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                            window.scrollTo({ 
+                                top: offsetPosition, 
+                                behavior: "smooth" 
+                            });
+                        }
+                        if (!mobileMenu.classList.contains('hidden')) { 
+                            mobileMenu.classList.add('hidden'); 
+                        }
+                    }
+                });
+            });
+            
+            // --- 히어로 섹션 슬라이드쇼 ---
+            const heroSection = document.getElementById('home');
+            const heroImages = [ 
+                'img/hero5.jpg', 'img/hero4.jpg', 'img/hero3.jpg','img/hero1.jpg',
+                'img/hero6.jpg','img/hero2.jpg','img/hero7.jpg','img/hero8.jpg' 
+            ];
+            
+            if (heroImages.length > 0) {
+                let currentHeroImageIndex = 0;
+                const slides = [];
+                
+                heroImages.forEach((src, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'hero-slide';
+                    slide.style.backgroundImage = `url('${src}')`;
+                    if (index === 0) { slide.classList.add('active'); }
+                    heroSection.prepend(slide);
+                    slides.push(slide);
+                });
+                
+                if (heroImages.length > 1) {
+                    setInterval(() => {
+                        slides[currentHeroImageIndex].classList.remove('active');
+                        currentHeroImageIndex = (currentHeroImageIndex + 1) % heroImages.length;
+                        slides[currentHeroImageIndex].classList.add('active');
+                    }, 6000);
+                }
+            }
+
+            // --- 썸네일 갤러리 스크립트 ---
+            const mainImageContainer = document.getElementById('main-image-container');
+            const thumbnailBar = document.getElementById('thumbnail-bar');
+
+            if(mainImageContainer && thumbnailBar) {
+                const galleryImages = [
+                    { src: 'img/hero3.JPG', alt: '체험학습' },
+                    { src: 'img/sijang.JPG', alt: '전주시장기' },
+                    { src: 'img/wire.jpg', alt: '줄넘기' },
+                    { src: 'img/simsa.JPG', alt: '국기원 심사' },
+                    { src: 'img/ke.JPG', alt: '어린이 수련' },
+                    { src: 'img/train.jpg', alt: '대련 연습' },
+                    { src: 'img/img1.jpg', alt: '수련 모습 1' },
+                    { src: 'img/img2.jpg', alt: '수련 모습 2' },
+                    { src: 'img/img3.jpg', alt: '수련 모습 3' },
+                    { src: 'img/img4.jpg', alt: '수련 모습 4' },
+                    { src: 'img/img6.jpg', alt: '수련 모습 5' },
+                    { src: 'img/img7.jpg', alt: '수련 모습 6' }
+                ];
+
+                let currentGalleryIndex = 0;
+                let autoPlayIntervalGallery;
+                const mainImageElements = [];
+                const thumbnailElements = [];
+
+                galleryImages.forEach((image, index) => {
+                    const mainImg = document.createElement('img');
+                    mainImg.src = image.src;
+                    mainImg.alt = image.alt;
+                    mainImg.className = 'main-gallery-image absolute top-0 left-0 w-full h-full object-cover';
+                    mainImg.style.opacity = index === 0 ? '1' : '0';
+                    mainImageContainer.appendChild(mainImg);
+                    mainImageElements.push(mainImg);
+
+                    const thumbImg = document.createElement('img');
+                    thumbImg.src = image.src;
+                    thumbImg.alt = image.alt;
+                    thumbImg.className = 'thumbnail-image h-16 md:h-20 aspect-video object-cover rounded-md';
+                    thumbnailBar.appendChild(thumbImg);
+                    thumbnailElements.push(thumbImg);
+
+                    thumbImg.addEventListener('click', () => {
+                        showImage(index);
+                        resetAutoPlayGallery();
+                    });
+                });
+
+                const showImage = (index) => {
+                    if (index === currentGalleryIndex && document.querySelector('.thumbnail-image.is-active')) return;
+
+                    mainImageElements[currentGalleryIndex].style.opacity = '0';
+                    mainImageElements[index].style.opacity = '1';
+                    
+                    if(thumbnailElements[currentGalleryIndex]) {
+                        thumbnailElements[currentGalleryIndex].classList.remove('is-active');
+                    }
+                    thumbnailElements[index].classList.add('is-active');
+
+                    // [갤러리 중앙 정렬 개선] 활성화된 썸네일이 중앙에 오도록 스크롤
+                    const activeThumbnail = thumbnailElements[index];
+                    const thumbnailBarWidth = thumbnailBar.offsetWidth;
+                    const scrollAmount = activeThumbnail.offsetLeft - (thumbnailBarWidth / 2) + (activeThumbnail.offsetWidth / 2);
+                    
+                    thumbnailBar.scrollTo({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+
+                    currentGalleryIndex = index;
+                };
+
+                const startAutoPlayGallery = () => {
+                    autoPlayIntervalGallery = setInterval(() => {
+                        const nextIndex = (currentGalleryIndex + 1) % galleryImages.length;
+                        showImage(nextIndex);
+                    }, 5000);
+                };
+
+                const resetAutoPlayGallery = () => {
+                    clearInterval(autoPlayIntervalGallery);
+                    startAutoPlayGallery();
+                };
+
+                // 초기화
+                showImage(0);
+                startAutoPlayGallery();
+            }
+
+
+            // --- 네이버 지도 API 실행 ---
+            if (window.naver && window.naver.maps && 'YOUR_CLIENT_ID_HERE' !== 'YOUR_CLIENT_ID_HERE') {
+                var mapOptions = {
+                    center: new naver.maps.LatLng(35.7925, 127.1235),
+                    zoom: 17,
+                    scrollWheel: false,
+                    draggable: true,
+                };
+                var map = new naver.maps.Map('map', mapOptions);
+                var marker = new naver.maps.Marker({
+                    position: new naver.maps.LatLng(35.7925, 127.1235),
+                    map: map
+                });
+            } else {
+                document.getElementById('map').innerHTML = '<div class="flex items-center justify-center h-full bg-gray-100 text-gray-500 p-4 text-center rounded-xl"><div><svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><p>지도를 불러오지 못했습니다.<br>Naver Maps API 클라이언트 ID를 확인해주세요.</p></div></div>';
+            }
+            
+            // --- 스크롤 애니메이션 효과 (Intersection Observer 활용) ---
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            const scrollObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            const animateElements = document.querySelectorAll('.floating-card');
+            animateElements.forEach(el => {
+                scrollObserver.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
